@@ -36,7 +36,7 @@ def navigation():
     if nav_Input == "A":
         add_Item()
     elif nav_Input == "V":
-        pass
+        view_Items()
     elif nav_Input == "D":
         pass
     else:
@@ -44,6 +44,7 @@ def navigation():
         navigation()
 
 def add_Item():
+    todos = load_json()
     slow_text("\nEnter item name")
     name = input("\n>> ")
     slow_text("\nEnter content")
@@ -56,11 +57,17 @@ def add_Item():
     current_item = item(name,content,date)
 
     with open("todo.json", "w") as f:
-        todos = load_json()
         values = {"content": current_item.get_content(),"date": current_item.get_date()}
         todos[current_item.get_name()] = values
         json.dump(todos, f)
 
+def view_Items():
+    data = load_json()
+    
+    for i in data:
+        content = data[i]["content"]
+        date = datetime.date(data[i]["date"][2],data[i]["date"][1],data[i]["date"][0])
+        slow_text(f"{i} | {content}\nDeadline:{date}\n")
 
 def slow_text(text):
     text = list(text)
