@@ -38,10 +38,14 @@ def navigation():
     elif nav_Input == "V":
         view_Items()
     elif nav_Input == "D":
-        pass
+        delete_Item()
     else:
         slow_text("Invalid Input, Please try again.")
         navigation()
+
+def save_Item(data):
+    with open("todo.json", "w") as f:
+        json.dump(data, f)
 
 def add_Item():
     todos = load_json()
@@ -55,11 +59,9 @@ def add_Item():
     day = int(input("Day >> "))
     date = [day,month,year]
     current_item = item(name,content,date)
-
-    with open("todo.json", "w") as f:
-        values = {"content": current_item.get_content(),"date": current_item.get_date()}
-        todos[current_item.get_name()] = values
-        json.dump(todos, f)
+    values = {"content": current_item.get_content(),"date": current_item.get_date()}
+    todos[current_item.get_name()] = values
+    save_Item(todos)
 
 def view_Items():
     data = load_json()
@@ -69,6 +71,20 @@ def view_Items():
         date = datetime.date(data[i]["date"][2],data[i]["date"][1],data[i]["date"][0])
         slow_text(f"{i} | {content}\nDeadline:{date}\n")
 
+def delete_Item():
+    data = load_json()
+
+    slow_text("\nEnter name of item to delete")
+    name = input("\n>> ")
+
+    try:
+        del data[name]
+        save_Item(data)
+        slow_text("Item Deleted")
+    except:
+        slow_text("Item does not exist.")
+
+
 def slow_text(text):
     text = list(text)
     for i in text:
@@ -76,3 +92,7 @@ def slow_text(text):
         time.sleep(0.025)
 
 menu()
+
+# Next add -
+# Expiration to items
+# Ability to tick off items
